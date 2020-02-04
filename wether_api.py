@@ -1,8 +1,8 @@
 from urllib import request
 import json
 
-contery = input("Witch country(country code)? ").lower()
-city = input("Witch city? ").lower()
+contery = input("which country(country code)? ").lower()
+city = input("which city? ").lower()
 
 url = f"https://api.openweathermap.org/data/2.5/weather?q={city},{contery}&appid=417e0181c8fa548da68f08c2b20d8989"
 
