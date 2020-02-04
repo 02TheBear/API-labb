@@ -4,48 +4,31 @@ import json
 contery = input("Witch country(country code)? ").lower()
 city = input("Witch city? ").lower()
 
-url = f"https://samples.openweathermap.org/data/2.5/weather?q={city},{contery}&appid=417e0181c8fa548da68f08c2b20d8989"
+url = f"https://api.openweathermap.org/data/2.5/weather?q={city},{contery}&appid=417e0181c8fa548da68f08c2b20d8989"
+
 json_dict_list = request.urlopen(url)
 dict_list = json.load(json_dict_list)
 zero_degrees = 273.15
-
-# Removing extra stuff
-dict_list.pop("coord")
-dict_list.pop("weather")
-dict_list.pop("base")
-dict_list["main"].pop("pressure")
-dict_list["sys"].pop("type")
-dict_list["sys"].pop("id")
-dict_list["sys"].pop("message")
-dict_list.pop("id")
-dict_list.pop("cod")
 
 # Reformating
 dict_list["main"]["temp"] -= zero_degrees
 dict_list["main"]["temp"] = int(dict_list["main"]["temp"])
 
-dict_list["main"]["temp_min"] -= zero_degrees
-dict_list["main"]["temp_min"] = int(dict_list["main"]["temp_min"])
+wind_dict = {
+    "NE":{"min_deg": 23, "max_deg": 68, "direction": "nordöstlig"},
+    "E":{"min_deg": 68, "max_deg": 113, "direction": "östlig"},
+    "SE":{"min_deg": 113, "max_deg": 158, "direction": "sydöstlig"},
+    "S":{"min_deg": 158, "max_deg": 203, "direction": "sydlig"},
+    "SW":{"min_deg": 203, "max_deg": 248, "direction": "sydvästlig"},
+    "W":{"min_deg": 248, "max_deg": 293, "direction": "västlig"},
+    "NW":{"min_deg": 293, "max_deg": 338, "direction": "nordvästlig"},
+}
+temporary = "nordlig"
+for wind_direction in wind_dict:
+    if  int(dict_list["wind"]["deg"]) < wind_dict[wind_direction]["min_deg"] and int(dict_list["wind"]["deg"]) < wind_dict[wind_direction]["max_deg"]:
+        temporary = wind_dict["wind"]["direction"]
 
-dict_list["main"]["temp_max"] -= zero_degrees
-dict_list["main"]["temp_max"] = int(dict_list["main"]["temp_max"])
-
-if dict_list["wind"]["deg"] > 22.5 and dict_list["wind"]["deg"] < 67.5:
-    dict_list["wind"]["deg"] = "nordöstlig"
-elif dict_list["wind"]["deg"] > 67.5 and dict_list["wind"]["deg"] < 112.5:
-    dict_list["wind"]["deg"] = "östlig"
-elif dict_list["wind"]["deg"] > 112.5 and dict_list["wind"]["deg"] < 157.5:
-    dict_list["wind"]["deg"] = "sydöstlig"
-elif dict_list["wind"]["deg"] > 157.5 and dict_list["wind"]["deg"] < 202.5:
-    dict_list["wind"]["deg"] = "sydlig"
-elif dict_list["wind"]["deg"] > 202.5 and dict_list["wind"]["deg"] < 247.5:
-    dict_list["wind"]["deg"] = "sydvästlig"
-elif dict_list["wind"]["deg"] > 247.5 and dict_list["wind"]["deg"] < 292.5:
-    dict_list["wind"]["deg"] = "västlig"
-elif dict_list["wind"]["deg"] > 292.5 and dict_list["wind"]["deg"] < 337.5:
-    dict_list["wind"]["deg"] = "nordvästlig"
-else:
-    dict_list["wind"]["deg"] = "nordlig"
+dict_list["wind"]["deg"] = temporary
 
 if dict_list["clouds"]["all"] < 100:
     dict_list["wind"]["all"] = "mycket målnigt"
