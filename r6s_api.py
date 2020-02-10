@@ -1,12 +1,15 @@
 from urllib import request
 import json
+import tabulate
 
-contery = input("Which platform? ").lower()
-city = input("Which player? ").lower()
+#Used to check a players stats
+def  one_player():
+    player = input("Which player? ").lower()
 
-url = f"https://api.openweathermap.org/data/2.5/weather?q={city},{contery}&appid=417e0181c8fa548da68f08c2b20d8989"
+    url = f"""https://r6tab.com/api/search.php?platform=uplay&search={player}"""
 
-json_dict_list = request.urlopen(url)
-dict_list = json.load(json_dict_list)
+    json_dict_list = request.urlopen(url)
+    dict_list = json.load(json_dict_list)
+    return(dict_list)
 
-
+print(one_player())
